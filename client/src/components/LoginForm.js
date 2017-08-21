@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Redirect } from 'react-router-dom';
 
 import superagent from 'superagent';
 
@@ -30,20 +29,13 @@ export default class LoginForm extends Component {
       .end((err, res) => {
         if(err) { this.setState({errorMessage: "Authentication Failed"}); }
         localStorage.setItem('token', res.body.token);
-        this.setState();
+        this.props.onSuccessfulLogin();
       });
   }
 
-  isAuthenticated() {
-    const token = localStorage.getItem('token');
-    return token && token.length > 10;
-  }
-
   render() {
-    const isAlreadyAuthenticated = this.isAuthenticated();
     return (
       <div>
-      {isAlreadyAuthenticated ? <Redirect to={{pathname: '/app'}} /> : (
         <form onSubmit={this.submitForm.bind(this)}>
           <TextField
             floatingLabelText="UserName"
@@ -61,7 +53,6 @@ export default class LoginForm extends Component {
             label="Submit"
           />
         </form>
-      )}
       </div>
     );
   }
